@@ -1,0 +1,26 @@
+version: '3.8'
+
+networks:
+  ispedant:
+    driver: bridge
+    ipam:
+      driver: default
+services:
+  dbgo:
+    image: mysql
+    restart: always
+    networks:
+      - ispedant
+    environment:
+      - MYSQL_DATABASE=db
+      - MYSQL_PASSWORD=12345
+      - MYSQL_ROOT_PASSWORD=12345
+    volumes:
+      - mysql10:/var/lib/mysql
+      # - ./docker/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ./:/home/
+    ports:
+      - "3310:3306"
+
+volumes:
+    mysql10:
