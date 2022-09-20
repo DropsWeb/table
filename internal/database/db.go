@@ -14,11 +14,18 @@ type database struct {
 	db       string
 }
 
+type User struct {
+	Name  string
+	City  string
+	Phone string
+	Table string
+}
+
 var dbdata = database{user: "root", password: "12345", db: "db"}
 
 var connectData string = dbdata.user + ":" + dbdata.password + "@tcp(127.0.0.1:3310)/" + dbdata.db
 
-func Db() {
+func DB() {
 	db, err := sql.Open("mysql", connectData)
 	if err != nil {
 		log.Fatal(err)
@@ -80,13 +87,32 @@ func CreateTable(table string, columns []string) {
 	}
 }
 
-// func CreateData() {
-// 	db, err := sql.Open("mysql", connectData)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
+func CreateData(user User) {
+	db, err := sql.Open("mysql", connectData)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
 
-// }
+	var query string
+
+	switch user.Table {
+	case "user":
+		check_user, err := db.Query("SELECT * FROM user WHERE name LIKE " + user.Name)
+		if err != nil {
+			fmt.Println(err, "ERROR")
+		}
+		if check_user == nil {
+			query = "INSERT INTO user (name, city, phone) VALUES (" + user.Name + "," + user.City + "," + user.Phone + ")"
+		} else {
+			fmt.Println(check_user.Scan(user), "usercheck")
+		}
+
+	}
+
+	fmt.Println(query)
+
+}
 
 // func GetData() {
 

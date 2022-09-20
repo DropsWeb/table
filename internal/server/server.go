@@ -1,8 +1,11 @@
 package server
 
 import (
-	"fmt"
+	"encoding/json"
+	"log"
 	"net/http"
+
+	"github.com/DropsWeb/table/internal/database"
 )
 
 func Server() {
@@ -11,5 +14,11 @@ func Server() {
 }
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(r.Body)
+	var user database.User
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	database.CreateData(user)
 }
